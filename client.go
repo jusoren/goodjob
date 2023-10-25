@@ -19,15 +19,22 @@ func NewClient(driver Driver) *Client {
 
 func (c *Client) CreateJob(job *Job) error {
 	defaultJob := Job{
-		ID:        cuid.New(),
-		Status:    "pending",
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Timeout:   60,
+		ID:         cuid.New(),
+		Status:     "pending",
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		Timeout:    60,
+		MaxRetries: 3,
 	}
 
-	if err := mergo.Merge(&job, defaultJob, mergo.WithOverride); err != nil {
+	maxRetries := job.MaxRetries
+
+	if err := mergo.Merge(job, defaultJob, mergo.WithOverride); err != nil {
 		return err
+	}
+
+	if maxRetries != 0 {
+		job.MaxRetries = maxRetries
 	}
 
 	return c.Driver.CreateJob(job)
