@@ -11,6 +11,7 @@ import (
 
 var db *gorm.DB
 var client *goodjob.Client
+var manager *goodjob.Manager
 
 func TestMain(m *testing.M) {
 	var err error
@@ -29,6 +30,9 @@ func TestMain(m *testing.M) {
 
 	// Create a client
 	client = goodjob.NewClient(driver)
+
+	// Create a manager
+	manager = goodjob.NewManager(driver)
 
 	code := m.Run()
 
